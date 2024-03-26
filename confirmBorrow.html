@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {background-color: lightgreen}
+        Button {background-color:blue}
+        h3 {color: whitesmoke}
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <Button onclick="redirectToMainPage()"><h3>Go back to item browsing page</h3></Button>
+    <br><br>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const bookTitles = sessionStorage.getItem("selectedBooks");
+            var confirmation = document.createElement('div');
+            confirmation.textContent = "The following books were added to your account: " + bookTitles + "."
+            document.body.appendChild(confirmation);
+        })
+
+        function redirectToMainPage() {
+            window.location.href = "library_frontend.html";
+        }
+
+
+    </script>
+</body>
+</html>

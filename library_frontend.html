@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <style>
+        body {background-color: green;}
+        h1  {color: whitesmoke;}
+        button {color: red; background-color: yellow; height: 50px; width: 120px;}
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center">Stanford Library</h1>
+    <table>
+        <tr>
+            <th>
+                <button onclick="viewShoppingCart()">View my Shopping Cart</button>
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th><button onclick = "logOut()"> Log Out</button></th>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th>
+                <img src="9781526626585.jpg" width="250" height="350">
+                <button name="Harry Potter and the Philosopher's Stone" data-title="Harry Potter and the Philosopher's Stone" data-author="J.K. Rowling" data-pages="320" onclick="notifyItemAdded(this)">Add to cart</button>
+                <button name="Harry Potter and the Philosopher's Stone" data-title="Harry Potter and the Philosopher's Stone" onclick="notifyItemRemoved(this)">Remove from cart</button>
+            </th>
+            <th>
+                <img src="{F0945E34-FBAA-4515-B625-4E5D27010518}Img400.jpg" width="250" height="350">
+                <button name="The Fault in our Stars" data-title="The Fault in our Stars" data-author="John Green" data-pages="352" onclick="notifyItemAdded(this)">Add to cart</button>
+                <button name="The Fault in our Stars" data-title="The Fault in our Stars" onclick="notifyItemRemoved(this)">Remove from cart</button>
+            </th>
+            <th>
+                <img src="81WBJQUEFsL._AC_UF1000,1000_QL80_.jpg" width="250" height="350">
+                <button name="Paper Towns" data-title="Paper Towns" data-author="John Green" data-pages="305" onclick="notifyItemAdded(this)">Add to cart</button>
+                <button name="Paper Towns" data-title="Paper Towns" onclick="notifyItemRemoved(this)">Remove from cart</button>
+            </th>
+        </tr>
+    </table>
+
+    <div id="bookList">
+        <!-- Book list will be displayed here -->
+    </div>
+
+    <script>
+        var shoppingCart = []
+
+        function notifyItemAdded(cartButton) {
+        /*    var selectedBooks = sessionStorage.getItem("selectedBooks")
+            if(selectedBooks != null) {
+                for(var i = 0; selectedBooks.length; i++) {
+                    if(selectedBooks[i] == cartButton.getAttribute("data-title")) {
+                        alert("Entered check dup function")
+                        alert("Item is already borrowed");
+                       // return;
+                    }
+                }
+            }*/
+            const book = {
+                title: cartButton.getAttribute('data-title'),
+                author: cartButton.getAttribute('data-author'), //retrieve attribute value of element by referencing name of attribute 
+                pages: parseInt(cartButton.getAttribute('data-pages'))
+            };
+            shoppingCart.push(book)
+            alert("Item '" + book.title + "' was added to your shopping cart.");
+        }
+
+        function notifyItemRemoved(cartButton) {
+            const index = shoppingCart.findIndex(book => book.title === cartButton.getAttribute('data-title'));
+            if (index !== -1) {
+                const removedBook = shoppingCart.splice(index, 1)[0];
+                alert("Item '" + removedBook.title + "' was removed from your shopping cart.");
+            } else {
+                alert("Item '" + cartButton.getAttribute('data-title') + "' is not in your shopping cart.");
+            }
+        }
+
+        function viewShoppingCart() {
+            sessionStorage.setItem("cart", JSON.stringify(shoppingCart)); //set shopping cart items to variable called cart
+            //redirect to new shopping cart page
+            window.location.href = "viewShoppingCart.html";
+        }
+
+        function logOut() {
+            window.location.href = 'userLogin.html';
+        }
+    </script>
+</body>
+</html>

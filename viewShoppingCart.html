@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items currently added in shopping cart</title>
+    <style>
+        body { background-color: yellow; }
+        button { background-color: blue; }
+        h3 { background-color: whitesmoke; }
+        .bookContainer { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <br><br>
+    <table><tr>
+        <th>
+            <button onclick="redirectToBrowse()"><h3>Go back to item browsing page</h3></button>
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>
+            <button onclick = "borrowSelectedItems()"><h3>Borrow selected items</h3></button>
+        </th>
+    </tr></table>
+    <br><br> 
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartJSON = JSON.parse(sessionStorage.getItem("cart"));
+
+            if (cartJSON && cartJSON.length > 0) {
+                cartJSON.forEach(function(book) {
+                    // Create a container div for each book
+                    const bookContainer = document.createElement('div');
+                    bookContainer.classList.add('bookContainer');
+
+                    
+                    const checkbox = document.createElement("input")
+                    checkbox.type = 'checkbox'
+                    checkbox.name = 'bookCheckbox';
+                    checkbox.value = book.title;
+                    bookContainer.appendChild(checkbox);
+
+                    // Create a text node with book details
+                    const bookDetails = document.createTextNode("Book Title: " + book.title + ", Author: " + book.author + ", Number of pages: " + book.pages);
+                    bookContainer.appendChild(bookDetails);
+
+                    document.body.appendChild(bookContainer);
+                });
+            }
+
+            else {
+                const noBooks = document.createElement('div')
+                noBooks.textContent = "No book items have been added to the cart."
+                document.body.appendChild(noBooks)
+            }
+
+
+        });
+
+        function redirectToBrowse() {
+            window.location.href = "library_frontend.html";
+        }
+
+        function borrowSelectedItems() {
+        const checkBoxElem = document.querySelectorAll('.bookContainer input[type="checkbox"]')
+        const checkedElements = Array.from(checkBoxElem).filter(function(elem) {
+            return elem.checked 
+        })
+    
+        var checkedBookTitles = []
+        for(var i = 0; i < checkedElements.length; i++) {
+          checkedBookTitles.push(checkedElements[i].value + "   ");
+        }
+    
+        if(checkedElements.length == 0) {
+             alert("No items were selected to borrow OR no items were added to the shopping cart.")
+        }
+
+        else { //redirect to confirmation page for selected books
+            sessionStorage.setItem("selectedBooks", checkedBookTitles);
+            window.location.href = "confirmBorrow.html";
+        }
+        
+
+
+        }
+
+    </script>
+</body>
+</html>

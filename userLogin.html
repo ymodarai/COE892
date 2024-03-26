@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <style>
+        body {background-color:greenyellow}
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login Page</title>
+</head>
+<body>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <br><br>
+        <button id="login" type="submit">Login</button>
+        </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById("loginForm");
+            const loginButton = document.getElementById("login");
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                console.log("Username: " + username);
+                console.log("Password: " + password);
+
+                //Must be modified to verify with all user accounts in database
+                if (username === "user" && password === "pass") {
+                    alert("Login successful");
+                    //redirect to library homepage if user login is successful
+                    window.location.href = "library_frontend.html"
+                } else {
+                    alert("Login unsuccessful");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
