@@ -34,26 +34,6 @@
         </tr>
     </table>
 
-    <table>
-        <tr>
-            <th>
-                <img src="9781526626585.jpg" width="250" height="350">
-                <button name="Harry Potter and the Philosopher's Stone" data-title="Harry Potter and the Philosopher's Stone" data-author="J.K. Rowling" data-pages="320" onclick="notifyItemAdded(this)">Add to cart</button>
-                <button name="Harry Potter and the Philosopher's Stone" data-title="Harry Potter and the Philosopher's Stone" onclick="notifyItemRemoved(this)">Remove from cart</button>
-            </th>
-            <th>
-                <img src="{F0945E34-FBAA-4515-B625-4E5D27010518}Img400.jpg" width="250" height="350">
-                <button name="The Fault in our Stars" data-title="The Fault in our Stars" data-author="John Green" data-pages="352" onclick="notifyItemAdded(this)">Add to cart</button>
-                <button name="The Fault in our Stars" data-title="The Fault in our Stars" onclick="notifyItemRemoved(this)">Remove from cart</button>
-            </th>
-            <th>
-                <img src="81WBJQUEFsL._AC_UF1000,1000_QL80_.jpg" width="250" height="350">
-                <button name="Paper Towns" data-title="Paper Towns" data-author="John Green" data-pages="305" onclick="notifyItemAdded(this)">Add to cart</button>
-                <button name="Paper Towns" data-title="Paper Towns" onclick="notifyItemRemoved(this)">Remove from cart</button>
-            </th>
-        </tr>
-    </table>
-
     <div id="bookList">
         <!-- Book list will be displayed here -->
     </div>
@@ -62,19 +42,9 @@
         var shoppingCart = []
 
         function notifyItemAdded(cartButton) {
-        /*    var selectedBooks = sessionStorage.getItem("selectedBooks")
-            if(selectedBooks != null) {
-                for(var i = 0; selectedBooks.length; i++) {
-                    if(selectedBooks[i] == cartButton.getAttribute("data-title")) {
-                        alert("Entered check dup function")
-                        alert("Item is already borrowed");
-                       // return;
-                    }
-                }
-            }*/
             const book = {
                 title: cartButton.getAttribute('data-title'),
-                author: cartButton.getAttribute('data-author'), //retrieve attribute value of element by referencing name of attribute 
+                author: cartButton.getAttribute('data-author'),
                 pages: parseInt(cartButton.getAttribute('data-pages'))
             };
             shoppingCart.push(book)
@@ -92,14 +62,67 @@
         }
 
         function viewShoppingCart() {
-            sessionStorage.setItem("cart", JSON.stringify(shoppingCart)); //set shopping cart items to variable called cart
-            //redirect to new shopping cart page
+            sessionStorage.setItem("cart", JSON.stringify(shoppingCart));
             window.location.href = "viewShoppingCart.html";
         }
 
         function logOut() {
             window.location.href = 'userLogin.html';
         }
+
+        function fetchBookList() {
+            fetch('http://localhost:8000/books')
+            .then(response => response.json())
+            .then(data => {
+                displayBookList(data);
+            })
+            .catch(error => {
+                console.error('Error fetching book list:', error);
+            });
+        }
+
+        function displayBookList(books) {
+            const bookListDiv = document.getElementById('bookList');
+            bookListDiv.innerHTML = ''; // Clear previous content
+
+            books.forEach(book => {
+                const bookDiv = document.createElement('div');
+
+                const image = document.createElement('img');
+                image.src = book.image_url;
+                image.width = 250; // Set width for image
+                image.height = 350; // Set height for image
+                bookDiv.appendChild(image); // Append image to bookDiv
+
+                const detailsParagraph = document.createElement('p');
+                detailsParagraph.textContent = `${book.title} by ${book.author}`;
+                bookDiv.appendChild(detailsParagraph); // Append detailsParagraph to bookDiv
+
+                const addToCartButton = document.createElement('button');
+                addToCartButton.textContent = "Add to Cart";
+                addToCartButton.onclick = function() {
+                    notifyItemAdded(this);
+                };
+                addToCartButton.setAttribute('data-title', book.title);
+                addToCartButton.setAttribute('data-author', book.author);
+                addToCartButton.setAttribute('data-pages', book.pages);
+                bookDiv.appendChild(addToCartButton); // Append addToCartButton to bookDiv
+
+                const removeFromCartButton = document.createElement('button');
+                removeFromCartButton.textContent = "Remove from Cart";
+                removeFromCartButton.onclick = function() {
+                    notifyItemRemoved(this);
+                };
+                removeFromCartButton.setAttribute('data-title', book.title);
+                bookDiv.appendChild(removeFromCartButton); // Append removeFromCartButton to bookDiv
+
+                bookListDiv.appendChild(bookDiv); // Append bookDiv to bookListDiv
+            });
+        }
+
+        window.onload = function() {
+            fetchBookList();
+        };
     </script>
 </body>
 </html>
