@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding-top: 50px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Add Book</h2>
+        <form id="addBookForm">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" placeholder="Enter the title" required>
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" placeholder="Enter the author" required>
+            <label for="image_url">Image URL:</label>
+            <input type="text" id="image_url" name="image_url" placeholder="Enter the image URL" required>
+            <br><br>
+            <button id="addBook" type="submit">Add Book</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBookForm = document.getElementById("addBookForm");
+
+            addBookForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const title = document.getElementById("title").value;
+                const author = document.getElementById("author").value;
+                const image_url = document.getElementById("image_url").value;
+
+                // Send book data to backend for adding
+                fetch("http://localhost:8000/add_book", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        author: author,
+                        image_url: image_url
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to add book");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Book added successfully");
+                    // Redirect to library homepage or any other page after adding the book
+                    window.location.href = "librarianHomePage.html";
+                })
+                .catch(error => {
+                    console.error("Failed to add book:", error);
+                    alert("Failed to add book");
+                });
+            });
+        });
+    </script>
+</body>
+</html>

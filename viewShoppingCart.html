@@ -52,7 +52,7 @@
                     bookContainer.appendChild(checkbox);
 
                     // Create a text node with book details
-                    const bookDetails = document.createTextNode("Book Title: " + book.title + ", Author: " + book.author + ", Number of pages: " + book.pages);
+                    const bookDetails = document.createTextNode("Book Title: " + book.title + ", Author: " + book.author );
                     bookContainer.appendChild(bookDetails);
 
                     document.body.appendChild(bookContainer);
@@ -72,30 +72,66 @@
             window.location.href = "library_frontend.html";
         }
 
-        function borrowSelectedItems() {
-        const checkBoxElem = document.querySelectorAll('.bookContainer input[type="checkbox"]')
-        const checkedElements = Array.from(checkBoxElem).filter(function(elem) {
-            return elem.checked 
-        })
-    
-        var checkedBookTitles = []
-        for(var i = 0; i < checkedElements.length; i++) {
-          checkedBookTitles.push(checkedElements[i].value + "   ");
-        }
-    
-        if(checkedElements.length == 0) {
-             alert("No items were selected to borrow OR no items were added to the shopping cart.")
-        }
+    //     function getUrlParameter(name) {
+    //     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    //     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    //     var results = regex.exec(location.search);
+    //     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    // };
+    function getUsernameFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+    return username;
+}
 
-        else { //redirect to confirmation page for selected books
-            sessionStorage.setItem("selectedBooks", checkedBookTitles);
-            window.location.href = "confirmBorrow.html";
-        }
-        
+    function borrowSelectedItems() {
+    const checkBoxElem = document.querySelectorAll('.bookContainer input[type="checkbox"]');
+    const checkedElements = Array.from(checkBoxElem).filter(elem => elem.checked);
 
+    if (checkedElements.length === 0) {
+        alert("No items were selected to borrow OR no items were added to the shopping cart.");
+    } else {
+        const checkedBookTitles = checkedElements.map(elem => elem.value);
 
-        }
+        // Function to fetch PUT request for updating book status
+        const updateBookStatus = async (title) => {
+            try {
+                const response = await fetch(`http://localhost:8000/books`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        is_taken: true,
+                        borrower_username: getUsernameFromURL() // Assuming you have a function to get the username from the URL
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to update book status");
+                }
+                return await response.json();
+            } catch (error) {
+                console.error("Error updating book status:", error);
+                throw error;
+            }
+        };
 
+        // Array to store promises for each book update request
+        const updatePromises = checkedBookTitles.map(title => updateBookStatus(title));
+
+        // Execute all update requests in parallel
+        Promise.all(updatePromises)
+            .then(data => {
+                alert("Books borrowed successfully");
+                sessionStorage.setItem("selectedBooks", JSON.stringify(checkedBookTitles));
+                window.location.href = "confirmBorrow.html";
+            })
+            .catch(error => {
+                alert("Failed to borrow books");
+            });
+    }
+}
     </script>
 </body>
 </html>
