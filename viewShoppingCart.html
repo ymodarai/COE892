@@ -5,10 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Items currently added in shopping cart</title>
     <style>
-        body { background-color: yellow; }
-        button { background-color: blue; }
-        h3 { background-color: whitesmoke; }
-        .bookContainer { margin-bottom: 10px; }
+        body {
+            background-color: #f0f0f0; /* Light gray background */
+            font-family: Arial, sans-serif; /* Optional: Change font family */
+            color: #333333; /* Text color */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+        button {
+            background-color: #007bff; /* Blue buttons */
+            color: #ffffff; /* Button text color */
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px; /* Optional: Adjust font size */
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        h3 {
+            background-color: #ffffff; /* White background for heading */
+            color: #333333; /* Heading text color */
+            padding: 10px; /* Optional: Adjust padding */
+            margin: 0; /* Remove default margin */
+            font-size: 18px; /* Optional: Adjust font size */
+        }
+        .bookContainer {
+            background-color: #ffffff; /* White background for book container */
+            padding: 10px; /* Optional: Adjust padding */
+            border-radius: 5px; /* Optional: Add rounded corners */
+            margin-bottom: 10px; /* Optional: Adjust margin */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add box shadow for depth */
+        }
+        .bookContainer input[type="checkbox"] {
+            margin-right: 10px; /* Optional: Adjust spacing between checkbox and text */
+        }
     </style>
 </head>
 <body>
@@ -78,11 +110,11 @@
     //     var results = regex.exec(location.search);
     //     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     // };
-    function getUsernameFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username');
-    return username;
-}
+//     function getUsernameFromURL() {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const username = urlParams.get('username');
+//     return username;
+// }
 
     function borrowSelectedItems() {
     const checkBoxElem = document.querySelectorAll('.bookContainer input[type="checkbox"]');
@@ -92,6 +124,7 @@
         alert("No items were selected to borrow OR no items were added to the shopping cart.");
     } else {
         const checkedBookTitles = checkedElements.map(elem => elem.value);
+        var username = sessionStorage.getItem("username");
 
         // Function to fetch PUT request for updating book status
         const updateBookStatus = async (title) => {
@@ -104,7 +137,7 @@
                     body: JSON.stringify({
                         title: title,
                         is_taken: true,
-                        borrower_username: getUsernameFromURL() // Assuming you have a function to get the username from the URL
+                        borrower_username: username // Assuming you have a function to get the username from the URL
                     })
                 });
                 if (!response.ok) {

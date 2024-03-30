@@ -105,6 +105,7 @@
                 } else {
                     alert("Login successful");
                     // Redirect to library homepage if user login is successful
+                    sessionStorage.setItem("username", username);
                     window.location.href = `library_frontend.html?username=${username}`;
                 }
             })

@@ -1,6 +1,6 @@
 #run uvicorn main:app --reload 
 
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
@@ -26,7 +26,10 @@ class Book(BaseModel):
 books = [
     Book(title="Harry Potter and the Philosopher's Stone", author="J.K. Rowling", image_url="https://m.media-amazon.com/images/I/91wKDODkgWL._AC_UF1000,1000_QL80_.jpg"),
     Book(title="The Fault in our Stars", author="John Green", image_url="https://m.media-amazon.com/images/I/61fbVx3W5cL._AC_UF1000,1000_QL80_.jpg"),
-    Book(title="Paper Towns", author="John Green", image_url="https://m.media-amazon.com/images/I/81245cfOyCL._AC_UF350,350_QL50_.jpg")
+    Book(title="Paper Towns", author="John Green", image_url="https://m.media-amazon.com/images/I/81245cfOyCL._AC_UF350,350_QL50_.jpg"),
+    Book(title="The Goldfinch", author="Donna Tartt", image_url="https://m.media-amazon.com/images/I/81PJRw8JJLL._AC_UF1000,1000_QL80_.jpg"     ),
+    Book(title="The Secret History", author="Donna Tartt", image_url="https://m.media-amazon.com/images/I/71HcEbK3pEL._AC_UF1000,1000_QL80_.jpg"     ),
+
 ]
 
 @app.get("/books", response_model=List[Book])
@@ -56,6 +59,7 @@ async def add_book(book: Book = Body(...)):
 
 @app.get("/all_books")
 async def get_all_books():
+    print(books)
     return books
 
 class User(BaseModel):
@@ -84,5 +88,12 @@ async def login(username: str = Body(...), password: str = Body(...)):
             else:
                 raise HTTPException(status_code=401, detail="Incorrect password")
     raise HTTPException(status_code=404, detail="User not found")
+
+
+@app.get("/borrowed_books", response_model=List[Book])
+async def get_borrowed_books(username: str = Query(..., title="Username of the borrower")):
+    borrowed_books = [book for book in books if book.is_taken and book.borrower_username == username]
+    print(borrowed_books)
+    return borrowed_books
 
 

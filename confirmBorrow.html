@@ -2,30 +2,50 @@
 <html lang="en">
 <head>
     <style>
-        body {background-color: lightgreen}
-        Button {background-color:blue}
-        h3 {color: whitesmoke}
+        body {
+            background-color: #ffffff; /* White background */
+            font-family: Arial, sans-serif; /* Optional: Change font family */
+            color: #333333; /* Text color */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+        button {
+            background-color: #007bff; /* Blue buttons */
+            color: #ffffff; /* Button text color */
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px; /* Optional: Adjust font size */
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        h3 {
+            color: #333333; /* Text color */
+        }
+        .confirmation {
+            margin-top: 20px; /* Optional: Adjust spacing */
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
-    <Button onclick="redirectToMainPage()"><h3>Go back to item browsing page</h3></Button>
+    <button onclick="redirectToMainPage()"><h3>Go back to item browsing page</h3></button>
+    <div class="confirmation"></div>
     <br><br>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const bookTitles = sessionStorage.getItem("selectedBooks");
-            var confirmation = document.createElement('div');
-            confirmation.textContent = "The following books were added to your account: " + bookTitles + "."
-            document.body.appendChild(confirmation);
+            var confirmation = document.querySelector('.confirmation');
+            confirmation.textContent = "The following books were added to your account: " + bookTitles + ".";
         })
 
         function redirectToMainPage() {
             window.location.href = "library_frontend.html";
         }
-
-
     </script>
 </body>
 </html>

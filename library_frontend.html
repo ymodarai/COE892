@@ -5,9 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Management System</title>
     <style>
-        body {background-color: green;}
-        h1  {color: whitesmoke;}
-        button {color: red; background-color: yellow; height: 50px; width: 120px;}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2; /* Light gray background */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #ffffff; /* White text color */
+            text-align: center;
+            background-color: #007bff; /* Blue background */
+            padding: 20px 0; /* Adjust top and bottom padding */
+            margin: 0; /* Remove default margin */
+        }
+
+        table {
+            margin: 20px auto; /* Center the table */
+            width: 80%; /* 80% width of the parent container */
+        }
+
+        th {
+            text-align: center;
+        }
+
+        button {
+            color: #ffffff; /* White text color */
+            background-color: #ffc107; /* Yellow background */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            height: 50px;
+            width: 100px;
+        }
+
+        button:hover {
+            background-color: #ffca28; /* Darker yellow on hover */
+        }
+
+        #bookList {
+            display: flex;
+            flex-wrap: wrap; /* Allow multiple rows */
+            justify-content: center; /* Center items horizontally */
+            gap: 20px; /* Spacing between items */
+            padding: 20px;
+        }
+
+        #bookList div {
+            background-color: #ffffff; /* White background for each book div */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1); /* Shadow effect */
+            width: 250px; /* Fixed width for each book div */
+            text-align: center;
+        }
+
+        img {
+            width: 100%; /* Make the image responsive within its container */
+            height: auto; /* Maintain aspect ratio */
+        }
     </style>
 </head>
 <body>
@@ -24,7 +81,7 @@
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
+            <th><button onclick="viewProfile()">View Profile</button></th>
             <th></th>
             <th></th>
             <th></th>
@@ -73,8 +130,12 @@
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
 
-        function logOut() {
-            window.location.href = 'userLogin.html';
+    function logOut() {
+    sessionStorage.removeItem("username"); // Remove username from sessionStorage when logging out
+    window.location.href = 'userLogin.html';
+}
+        function viewProfile(){
+            window.location.href =`viewProfile.html`;
         }
 
         function fetchBookList() {

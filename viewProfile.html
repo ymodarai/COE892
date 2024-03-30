@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Add any CSS styles here -->
+    <style>
+        /* Add your CSS styles here */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            width: 100px;
+            height: auto;
+        }
+        .return-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .return-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Profile</h1>
+    <div id="borrowedBooks">
+        <!-- Borrowed books will be displayed here -->
+    </div>
+
+    <script>
+        // Function to extract query parameter from URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Function to return a borrowed book
+        function returnBook(title) {
+            const requestOptions = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: title,
+                    is_taken: false,
+                    borrower_username: null  // Set borrower_username to null
+                })
+            };
+
+            fetch('http://localhost:8000/books', requestOptions)
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);  // Display success message
+                    location.reload();  // Refresh the page
+                })
+                .catch(error => {
+                    console.error('Error returning book:', error);
+                    alert('Failed to return book');  // Display error message
+                });
+        }
+
+        // Function to fetch borrowed books for the user
+        function fetchBorrowedBooks(username) {
+            fetch(`http://localhost:8000/borrowed_books?username=${username}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayBorrowedBooks(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching borrowed books:', error);
+                });
+        }
+
+        // Function to display borrowed books on the page
+        function displayBorrowedBooks(books) {
+            const borrowedBooksDiv = document.getElementById('borrowedBooks');
+            borrowedBooksDiv.innerHTML = ''; // Clear previous content
+
+            if (books.length === 0) {
+                borrowedBooksDiv.innerHTML = '<p>No books borrowed.</p>';
+            } else {
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const tbody = document.createElement('tbody');
+                const trHeader = document.createElement('tr');
+                const thImage = document.createElement('th');
+                const thTitle = document.createElement('th');
+                const thAuthor = document.createElement('th');
+                const thReturn = document.createElement('th');
+                thImage.textContent = '';
+                thTitle.textContent = 'Title';
+                thAuthor.textContent = 'Author';
+                thReturn.textContent = '';
+                trHeader.appendChild(thImage);
+                trHeader.appendChild(thTitle);
+                trHeader.appendChild(thAuthor);
+                trHeader.appendChild(thReturn);
+                thead.appendChild(trHeader);
+                table.appendChild(thead);
+
+                books.forEach(book => {
+                    const tr = document.createElement('tr');
+                    const tdImage = document.createElement('td');
+                    const img = document.createElement('img');
+                    img.src = book.image_url;
+                    tdImage.appendChild(img);
+                    const tdTitle = document.createElement('td');
+                    tdTitle.textContent = book.title;
+                    const tdAuthor = document.createElement('td');
+                    tdAuthor.textContent = book.author;
+                    const tdReturn = document.createElement('td');
+                    const returnButton = document.createElement('button');
+                    returnButton.textContent = 'Return Book';
+                    returnButton.className = 'return-button';
+                    returnButton.onclick = function() {
+                        returnBook(book.title); // Call returnBook function with book title
+                    };
+                    tdReturn.appendChild(returnButton);
+
+                    tr.appendChild(tdImage);
+                    tr.appendChild(tdTitle);
+                    tr.appendChild(tdAuthor);
+                    tr.appendChild(tdReturn);
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                borrowedBooksDiv.appendChild(table);
+            }
+        }
+
+        // Main function to execute on page load
+        window.onload = function() {
+            var username = sessionStorage.getItem("username");
+            console.log(username)
+            fetchBorrowedBooks(username);
+        };
+    </script>
+</body>
+</html>
