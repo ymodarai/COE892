@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
+#Create instance of FastAPI
 app = FastAPI()
 
 # Define CORS policy
